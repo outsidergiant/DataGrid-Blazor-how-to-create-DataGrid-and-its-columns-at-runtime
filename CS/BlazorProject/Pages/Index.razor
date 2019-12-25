@@ -1,0 +1,68 @@
+﻿@page "/"
+
+@{
+
+    RenderFragment<DataItem> buildGridsWithColumns = (dataObject) =>
+    @<DxDataGrid Data="@dataObject.Data">
+        @foreach (var column in dataObject.ColumnNames)
+        {
+            <DxDataGridColumn Field="@column" />
+        }
+    </DxDataGrid>;
+}
+@foreach (var item in dataObjects)
+{
+    @buildGridsWithColumns(item)
+}
+
+@code {
+    List<DataItem> dataObjects;
+    IEnumerable<DataItem> DataSource;
+
+    protected override void OnInitialized()
+    {
+        dataObjects = new List<DataItem>();
+        for (int i = 0; i < 2; i++)
+        {
+            DataItem dataItem = new DataItem();
+            List<DataObject> list = new List<DataObject>();
+            List<string> columnNames = new List<string>();
+
+            for (int j = 0; j < 5; j++)
+            {
+                list.Add(new DataObject() { A = j, B = "text " + j, C = "item " + j, D = "D" + j });
+            }
+            columnNames = i % 2 == 0 ? new List<string>() { "A", "B" } : new List<string>() { "C", "D" };
+            dataItem.Data = list;
+            dataItem.ColumnNames = columnNames;
+
+            dataObjects.Add(dataItem);
+        }
+
+
+    }
+
+    async void OnRowUpdating(DataObject dataItem, Dictionary<string, object> newValue)
+    {
+
+    }
+
+    async void OnRowInserting(Dictionary<string, object> newValue)
+    {
+
+    }
+
+    public class DataObject
+    {
+        public int A { get; set; }
+        public string B { get; set; }
+        public string C { get; set; }
+        public string D { get; set; }
+    }
+    public class DataItem
+    {
+        public IEnumerable<DataObject> Data { get; set; }
+        public List<string> ColumnNames { get; set; }
+    }
+
+}
